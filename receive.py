@@ -3,11 +3,13 @@ import pika
 import json
 import importlib
 
+from constants import RABBITMQ_HOST
+
 
 QUEUE_NAME = 'translate-hindi'
 
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='127.0.0.1'))
+    pika.ConnectionParameters(host=RABBITMQ_HOST))
 channel = connection.channel()
 
 channel.queue_declare(queue=QUEUE_NAME, durable=True)
