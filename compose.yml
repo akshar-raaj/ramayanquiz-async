@@ -1,0 +1,7 @@
+services:
+  async:
+    build: .
+    volumes:
+      - type: bind
+        source: .
+        target: /app
