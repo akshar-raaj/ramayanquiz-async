@@ -1,9 +1,12 @@
 """
-Performs post-processing on a Question and the associated choices.
+Performs post-processing on a Question.
+1. Translates the english text for a question and the associated choices to various target languages.
+2. Generates additional context/information for a question.
 """
 
 from database import fetch_question, update_column_value, fetch_question_answers
 from translate import translate
+from information import information
 
 
 def post_process(question_id: int):
@@ -11,6 +14,8 @@ def post_process(question_id: int):
     The function translates the english text for a question and the associated choices to various target languages.
 
     In addition, it update the question row in the database and sets the translated text. Thus it assumes that proper columns exist.
+
+    Similarly, it generates information for a question and updates the same in the database.
     """
     print(f"Post processing for {question_id} started.")
     question = fetch_question(question_id)
@@ -28,4 +33,7 @@ def post_process(question_id: int):
     for answer in answers:
         telugu_text = translate(answer['answer'], translate_to='Telugu')
         update_column_value('answers', answer['id'], 'answer_telugu', telugu_text)
+
+    information_text = information(question['question'])
+    update_column_value('questions', question_id, 'information', information_text)
     print(f"Post processing for {question_id} completed.")
