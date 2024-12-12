@@ -2,6 +2,8 @@
 import pika
 import json
 import importlib
+import signal
+import sys
 
 from constants import RABBITMQ_HOST
 
@@ -11,6 +13,17 @@ QUEUE_NAME = 'translate-hindi'
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host=RABBITMQ_HOST))
 channel = connection.channel()
+
+
+def sigterm_handler(*args):
+    print("Received TERM signal. Closing the channel and connection")
+    channel.close()
+    connection.close()
+    sys.exit(0)
+
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+
 
 channel.queue_declare(queue=QUEUE_NAME, durable=True)
 print(' [*] Waiting for messages. To exit press CTRL+C')
