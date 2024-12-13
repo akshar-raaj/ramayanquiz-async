@@ -8,7 +8,9 @@ import sys
 from constants import RABBITMQ_HOST
 
 
-QUEUE_NAME = 'translate-hindi'
+PROCESS_QUESTION_QUEUE_NAME = 'process-question'
+QUESTION_INFORMATION_QUEUE_NAME = 'question-information'
+QUESTION_TRANSLATION_QUEUE_NAME = 'question-translation'
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host=RABBITMQ_HOST))
@@ -25,7 +27,10 @@ def sigterm_handler(*args):
 signal.signal(signal.SIGTERM, sigterm_handler)
 
 
-channel.queue_declare(queue=QUEUE_NAME, durable=True)
+channel.queue_declare(queue=PROCESS_QUESTION_QUEUE_NAME, durable=True)
+channel.queue_declare(queue=QUESTION_INFORMATION_QUEUE_NAME, durable=True)
+channel.queue_declare(queue=QUESTION_TRANSLATION_QUEUE_NAME, durable=True)
+
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
 
@@ -62,8 +67,8 @@ def callback(ch, method, properties, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         return None
     try:
-        # func(*args)
-        print("Skipping function for now")
+        func(*args)
+        # print("Skipping function for now")
     except Exception as e:
         print(f"Exception {e} while running the function")
         ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -73,6 +78,8 @@ def callback(ch, method, properties, body):
 
 
 channel.basic_qos(prefetch_count=3)
-channel.basic_consume(queue=QUEUE_NAME, on_message_callback=callback)
+channel.basic_consume(queue=PROCESS_QUESTION_QUEUE_NAME, on_message_callback=callback)
+channel.basic_consume(queue=QUESTION_INFORMATION_QUEUE_NAME, on_message_callback=callback)
+channel.basic_consume(queue=QUESTION_TRANSLATION_QUEUE_NAME, on_message_callback=callback)
 
 channel.start_consuming()
