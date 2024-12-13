@@ -5,15 +5,17 @@ import importlib
 import signal
 import sys
 
-from constants import RABBITMQ_HOST
+from constants import RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PASSWORD
 
 
 PROCESS_QUESTION_QUEUE_NAME = 'process-question'
 QUESTION_INFORMATION_QUEUE_NAME = 'question-information'
 QUESTION_TRANSLATION_QUEUE_NAME = 'question-translation'
 
+
+credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASSWORD)
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=RABBITMQ_HOST))
+    pika.ConnectionParameters(host=RABBITMQ_HOST, port=RABBITMQ_PORT, credentials=credentials))
 channel = connection.channel()
 
 
