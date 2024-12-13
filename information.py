@@ -16,7 +16,7 @@ def information(question: str):
                 {"role": "system", "content": "You are a helpful assistant."},
                 {
                     "role": "user",
-                    "content": f"Provide me a concise information/context, or additional engaging information, for this particular Ramayana question. It shouldn't be more than 30 words."
+                    "content": f"Provide me a concise and engaging information for this question. If possible, provide me info on the most important noun in this question. It shouldn't be more than 30 words. The question is: {question}"
                 }
             ]
         )
