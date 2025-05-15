@@ -22,18 +22,27 @@ def post_process(question_id: int):
     if question == {}:
         print("Invalid question id")
         return
-    hindi_text = translate(question['question'])
-    update_column_value('questions', question_id, 'question_hindi', hindi_text)
+    if question['question_hindi'] is None:
+        print(f"Hindi translation for {question['question']} not available. Performing translation")
+        hindi_text = translate(question['question'])
+        update_column_value('questions', question_id, 'question_hindi', hindi_text)
     answers = fetch_question_answers(question_id)
     for answer in answers:
-        hindi_text = translate(answer['answer'])
-        update_column_value('answers', answer['id'], 'answer_hindi', hindi_text)
-    telugu_text = translate(question['question'], translate_to='Telugu')
-    update_column_value('questions', question_id, 'question_telugu', telugu_text)
+        if answer['answer_hindi'] is None:
+            print(f"Hindi translation for {answer['answer']} not available. Performing translation")
+            hindi_text = translate(answer['answer'])
+            update_column_value('answers', answer['id'], 'answer_hindi', hindi_text)
+    if question['question_telugu'] is None:
+        print(f"Telugu translation for {question['question']} not available. Performing translation")
+        telugu_text = translate(question['question'], translate_to='Telugu')
+        update_column_value('questions', question_id, 'question_telugu', telugu_text)
     for answer in answers:
-        telugu_text = translate(answer['answer'], translate_to='Telugu')
-        update_column_value('answers', answer['id'], 'answer_telugu', telugu_text)
+        if answer['answer_telugu'] is None:
+            print(f"Telugu translation for {answer['answer']} not available. Performing translation")
+            telugu_text = translate(answer['answer'], translate_to='Telugu')
+            update_column_value('answers', answer['id'], 'answer_telugu', telugu_text)
 
-    information_text = information(question['question'])
-    update_column_value('questions', question_id, 'information', information_text)
+    if question['information'] is None:
+        information_text = information(question['question'])
+        update_column_value('questions', question_id, 'information', information_text)
     print(f"Post processing for {question_id} completed.")

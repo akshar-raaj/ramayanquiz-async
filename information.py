@@ -25,8 +25,8 @@ def information(question: str):
         return
     try:
         content = completion.choices[0].message.content
+        print(f"Retrieved information for {question}")
         return content
     except Exception:
         print("Error in parsing OpenAI result")
         return
-    print(f"Retrieved information for {question}")

@@ -11,6 +11,11 @@ from constants import CHATGPT_MODEL
 
 
 def translate(english_text: str, translate_to: str = 'Hindi'):
+    """
+    This refers the cache first.
+    If the value is available in cache, then no OpenAI invocation happens.
+    This allows keeping the cost in check.
+    """
     print(f"Translating {english_text} to {translate_to}")
     client = OpenAI()
     try:
@@ -29,8 +34,8 @@ def translate(english_text: str, translate_to: str = 'Hindi'):
         return
     try:
         content = completion.choices[0].message.content
+        print(f"Translated {english_text} to {translate_to}")
         return content
     except Exception:
         print("Error in parsing OpenAI result")
         return
-    print(f"Translated {english_text} to {translate_to}")

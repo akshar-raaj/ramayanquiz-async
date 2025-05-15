@@ -1,7 +1,9 @@
 # Use an official Python image as a base
+# Using a slim image for minimal build size and faster deployment
 FROM python:3.10-slim
 
 # Install ps
+# Needed for healthcheck command
 RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory to /app

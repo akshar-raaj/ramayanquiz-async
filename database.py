@@ -57,7 +57,7 @@ def fetch_question(question_id: int) -> dict[str, str | int]:
     connection = get_database_connection()
     with connection:
         with connection.cursor() as cursor:
-            statement = "SELECT id, question from questions WHERE id=%s"
+            statement = "SELECT id, question, question_hindi, question_telugu, information from questions WHERE id=%s"
             cursor.execute(statement, (question_id,))
             result = cursor.fetchone()
             columns = [col.name for col in cursor.description]
@@ -74,7 +74,7 @@ def fetch_question_answers(question_id: int) -> list[dict[str, str | int]]:
     connection = get_database_connection()
     with connection:
         with connection.cursor() as cursor:
-            statement = "SELECT a.id, a.answer from answers a WHERE a.question_id=%s"
+            statement = "SELECT a.id, a.answer, a.answer_hindi, a.answer_telugu from answers a WHERE a.question_id=%s"
             cursor.execute(statement, (question_id,))
             rows = cursor.fetchall()
             columns = [col.name for col in cursor.description]
